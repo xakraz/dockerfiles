@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+
+# == Vars
+#
+DOKER_REGISTRY=''               # Hub.docker.com
+DOCKER_REPO=xakra
+DOCKER_IMAGE=fwbuilder
+DOCKER_IMAGE_VERSION=5.1.0.3599-debian8.8
+
+
+# == Config
+#
+# Final image
+docker_image=''
+[ -n "${DOCKER_REGISTRY}" ] && docker_image="${DOCKER_REGISTRY}/"
+[ -n "${DOCKER_REPO}" ] && docker_image="${docker_image}${DOCKER_REPO}"
+[ -n "${DOCKER_IMAGE}" ] && docker_image="${docker_image}/${DOCKER_IMAGE}"
+
+
+docker_opts=""
+if [ "x" != "x$@" ]; then
+  docker_opts="--entrypoint $@"
+fi
+
+
+
+# == Helpers
+#
+function ctrl_c() {
+  echo "** Trapped CTRL-C"
+  echo "** Cleaning: "
+  xhost -local:root
+}
+
+
+
+# == Run
+#
+# Allow connections to X server
+xhost +local:root
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
+docker run --rm -it \
+  --log-driver="none" \
+  ${docker_opts} \
+  --user=$(id -u) \
+  --env="DISPLAY" \
+  --env="QT_X11_NO_MITSHM=1" \
+  --volume="/tmp/.X11-unix/:/tmp/.X11-unix/:rw" \
+  --volume="/etc/group:/etc/group:ro" \
+  --volume="/etc/passwd:/etc/passwd:ro" \
+  --volume="/etc/shadow:/etc/shadow:ro" \
+  --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+  --volume="/dev/shm:/dev/shm" \
+  --volume ${HOME}/.config/netcitadel.com:${HOME}/.config/netcitadel.com \
+  --volume $(pwd):$(pwd) \
+  --workdir $(pwd) \
+  ${docker_image}:${DOCKER_IMAGE_VERSION}
+
