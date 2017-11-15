@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+
+# == Vars
+#
+# Hub.docker.com
+DOKER_REGISTRY=''
+
+DOCKER_REPO=xakra
+DOCKER_IMAGE=kali-linux-docker
+DOCKER_IMAGE_VERSION=latest
+
+
+# == Config
+#
+# Final image
+docker_image=''
+[ -n "${DOCKER_REGISTRY}" ] && docker_image="${DOCKER_REGISTRY}/"
+[ -n "${DOCKER_REPO}" ] && docker_image="${docker_image}${DOCKER_REPO}"
+[ -n "${DOCKER_IMAGE}" ] && docker_image="${docker_image}/${DOCKER_IMAGE}"
+[ -n "${DOCKER_IMAGE_VERSION}" ] && docker_image="${docker_image}:${DOCKER_IMAGE_VERSION}"
+
+
+
+# == Run
+#
+docker run --rm -it \
+  --log-driver="none" \
+  --net=host \
+  --privileged \
+  --user=$(id -u) \
+  --env="HOME=${HOME}" \
+  --volume="/etc/passwd:/etc/passwd:ro" \
+  --volume="/etc/shadow:/etc/shadow:ro" \
+  --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+  --volume $(pwd):$(pwd) \
+  --workdir $(pwd) \
+  ${docker_image} /bin/bash
+
