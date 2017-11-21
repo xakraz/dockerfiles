@@ -1,0 +1,23 @@
+# == Base image
+#
+# Image based on Ubuntu:latest
+# https://github.com/jamesnetherton/docker-atom-editor/blob/master/Dockerfile
+#
+FROM jamesnetherton/docker-atom-editor
+
+# Go back to root for install
+USER root
+RUN echo "* Installing OS dependencies" \
+  && apt update \
+  && apt install -y python3-pip \
+  && echo "* Setting Python3 as default Python" \
+  && update-alternatives --install /usr/bin/python python $(which python3) 9 \
+  && update-alternatives --install /usr/bin/pip pip $(which pip3) 9 \
+  && echo "* Installing Python Language Server" \
+  && pip install --upgrade pip \
+  && pip install python-language-server \
+  && echo "* Test Python Language Server" \
+  && pyls --help
+
+# Drop back to user 'atom' from base image
+USER atom

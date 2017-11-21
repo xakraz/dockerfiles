@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+
+docker_opts=""
+[[ "shell" == "$@" ]] && docker_opts="${docker_opts} --entrypoint /bin/bash"
+
+
+# Allow connection to Xserver Unix socket
+xhost +local:root
+
+
+docker run --rm -it \
+  --log-driver="none" \
+  ${docker_opts} \
+  -u $(id -u) \
+  -e DISPLAY \
+  -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
+  -v /dev/shm:/dev/shm \
+  -v ${HOME}/.atom:/home/atom/.atom \
+  -v ${HOME}/Sources/:/home/atom/Sources \
+  xakra/atom:1.21.2-ide-python3
