@@ -88,3 +88,8 @@ done
 log "---> Starting Atom docker container"
 docker container run ${docker_opts} ${docker_image}
 
+[[ $(notify-send --help) ]] \
+  && notify-send \
+    -i atom \
+    "$(basename $script_name) started" \
+    "Workspace_dir=${workspace_dir}"
