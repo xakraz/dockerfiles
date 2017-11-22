@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+#
+
+docker run --rm -it \
+  --user=$(id -u) \
+  --volume=$(pwd):$(pwd) \
+  --workdir=$(pwd) \
+  --publish=1313:1313 \
+  xakra/hugo:0.26 "$@"
