@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+#
+#
+#
+# == Vars
+#
+script_name=$0
+
+workspace_dir=${ATOM_WORKSPACE_DIR:-${HOME}/Sources}
+
+docker_image='xakra/atom:1.21.2-ide-python2'
+
+docker_opts="--rm -it\
+  --detach=true \
+  --log-driver=none \
+  --user=$(id -u) \
+  --env=DISPLAY \
+  --volume=/tmp/.X11-unix/:/tmp/.X11-unix/ \
+  --volume=/dev/shm:/dev/shm \
+  --volume=${HOME}/.atom:/home/atom/.atom \
+  --volume=${workspace_dir}:/home/atom/Sources \
+  --name=atom"
+
+
+
+# == Helpers
+#
+function log(){
+  message="$@"
+
+  [[ -n "${DEBUG}" ]] && (>&2 echo "$message")
+}
+
+function usage(){
+  echo "${script_name}: Run Atom as a docker container"
+  echo ""
+  echo "Available environment variables:"
+  echo "- DEBUG: If set, display info on STDERR"
+  echo "- ATOM_WORKSPACE_DIR: Absolute path to your source directory, will be mounted into the container"
+  echo ""
+  echo "Available options:"
+  echo "--shell: Runs an interactive shell into the container for debugging"
+  echo "--help: This message"
+  echo ""
+
+  exit 0
+}
+
+
+
+# == Start
+#
+# === Output management
+#
+# If DEBUG is set, display error messages in the terminal,
+# Redirect to /dev/null otherwise
+
+log "===> ${script_name}: Start"
+
+
+# === Options parsing
+#
+# Allow User to ask for debugging shell into the container
+[[ "--shell" == "$1" ]] \
+  && docker_opts="${docker_opts} --entrypoint /bin/bash" \
+  && log "---> Setting entrypoint to /bin/bash"
+
+[[ "--help" == "$1" ]] \
+  && usage
+
+[[ -z "$@" ]] \
+  && log "---> No options have been provided; continue"
+
+
+# === Actions
+#
+# Allow connection to Xserver Unix socket
+log "---> WARNING - Allowing connections to Xserver outside of Localhost"
+xhost +local:root
+
+log "---> Docker container info"
+log "     Image: ${docker_image}"
+log "     Run options:"
+for option in ${docker_opts}; do
+  log "     ${option}"
+done
+
+log "---> Starting Atom docker container"
+docker container run ${docker_opts} ${docker_image}
+
+[[ $(notify-send --help) ]] \
+  && notify-send \
+    -i atom \
+    "$(basename $script_name) started" \
+    "Workspace_dir=${workspace_dir}"
