@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+#
+
+docker run \
+  --rm \
+  --volume=${HOME}/.docker/config.json/:/root/.docker/config.json:ro \
+  --volume=/var/run/docker.sock:/var/run/docker.sock \
+  luebken/skopeo \
+  skopeo "$@"
