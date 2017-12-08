@@ -2,9 +2,17 @@
 #
 #
 
+# == Vars
+#
+# Hub.docker.io
+DOCKER_REGISTRY="${DOCKER_REGISTRY/:-''}"
+DOCKER_IMAGE=alexeiled/skopeo
+DOCKER_IMAGE_TAG=latest
+
+
 docker run \
   --rm \
   --volume=${HOME}/.docker/config.json/:/root/.docker/config.json:ro \
   --volume=/var/run/docker.sock:/var/run/docker.sock \
-  luebken/skopeo \
+  ${DOCKER_REGISTRY}${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG} \
   skopeo "$@"
