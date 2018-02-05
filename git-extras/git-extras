@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+
+# == Vars
+#
+DOKER_REGISTRY=''               # Hub.docker.com
+DOCKER_REPO=xakra
+DOCKER_IMAGE=git-extras
+DOCKER_IMAGE_VERSION=4.4.0-alpine3.6
+
+
+# == Config
+#
+# Final image
+docker_image=''
+[ -n "${DOCKER_REGISTRY}" ] && docker_image="${DOCKER_REGISTRY}/"
+[ -n "${DOCKER_REPO}" ] && docker_image="${docker_image}${DOCKER_REPO}"
+[ -n "${DOCKER_IMAGE}" ] && docker_image="${docker_image}/${DOCKER_IMAGE}"
+
+
+
+
+# == Run
+#
+
+docker run --rm -it \
+  --log-driver="none" \
+  \
+  --user=$(id -u) \
+  --volume="/etc/group:/etc/group:ro" \
+  --volume="/etc/passwd:/etc/passwd:ro" \
+  --volume="/etc/shadow:/etc/shadow:ro" \
+  \
+  --volume $(pwd):$(pwd) \
+  --workdir $(pwd) \
+  ${docker_image}:${DOCKER_IMAGE_VERSION} "$@"
+
