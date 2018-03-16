@@ -5,7 +5,7 @@
 # == Vars
 #
 # Hub.docker.io
-DOCKER_REGISTRY="${DOCKER_REGISTRY/:-''}"
+DOCKER_REGISTRY=""
 DOCKER_IMAGE=alexeiled/skopeo
 DOCKER_IMAGE_TAG=latest
 
