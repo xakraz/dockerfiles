@@ -10,16 +10,16 @@ workspace_dir=${ATOM_WORKSPACE_DIR:-${HOME}/Sources}
 
 docker_image='xakra/atom:1.21.2-ide-python3'
 
-docker_opts="--rm -it\
-  --detach=true \
-  --log-driver=none \
-  --user=$(id -u) \
-  --env=DISPLAY \
-  --volume=/tmp/.X11-unix/:/tmp/.X11-unix/ \
-  --volume=/dev/shm:/dev/shm \
-  --volume=${HOME}/.atom:/home/atom/.atom \
-  --volume=${workspace_dir}:/home/atom/Sources \
-  --name=atom"
+docker_opts="--rm -it"
+docker_opts="${docker_opts} --log-driver=none"
+docker_opts="${docker_opts} --detach=true"
+docker_opts="${docker_opts} --user=$(id -u)"
+docker_opts="${docker_opts} --env=DISPLAY"
+docker_opts="${docker_opts} --volume=/tmp/.X11-unix/:/tmp/.X11-unix/"
+docker_opts="${docker_opts} --volume=/dev/shm:/dev/shm"
+docker_opts="${docker_opts} --name=atom"
+docker_opts="${docker_opts} --volume=${HOME}/.atom:/home/atom/.atom"
+docker_opts="${docker_opts} --volume=${workspace_dir}:/home/atom/Sources"
 
 
 

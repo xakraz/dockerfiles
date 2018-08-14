@@ -14,8 +14,10 @@ RUN echo "* Installing OS dependencies" \
   && update-alternatives --install /usr/bin/python python $(which python3) 9 \
   && update-alternatives --install /usr/bin/pip pip $(which pip3) 9 \
   && echo "* Installing Python Language Server" \
-  && pip install --upgrade pip \
-  && pip install python-language-server \
+  && pip install --upgrade 'pip<10' \
+  && pip install \
+    pycodestyle \
+    python-language-server \
   && echo "* Test Python Language Server" \
   && pyls --help
 
