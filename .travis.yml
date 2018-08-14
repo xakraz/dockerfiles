@@ -1,0 +1,15 @@
+---
+# Prep the build environment
+sudo: required
+services:
+  - docker
+
+
+# Tests and build scripts
+script:
+  - ./scripts/test.sh
+
+
+# Notif
+notifications:
+  email: true

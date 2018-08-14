@@ -18,6 +18,7 @@ This repo is a collection of `Dockerfiles` and `Shell` wrappers to use container
 
 Inspired by https://github.com/jessfraz/dockerfiles
 
+[![Build Status](https://travis-ci.org/xakraz/dockerfiles.svg?branch=master)](https://travis-ci.org/xakraz/dockerfiles)
 
 
 ## TL;DR

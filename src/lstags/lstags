@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+#
+#
+# == Vars
+#
+script_name=$0
+
+docker_image='ivanilves/lstags'
+
+docker_opts="--rm -it\
+  --log-driver=none \
+  --user=$(id -u) \
+  --volume=/var/run/docker.sock:/var/run/docker.sock"
+
+
+
+# == Helpers
+#
+function log(){
+  message="$@"
+
+  [[ -n "${DEBUG}" ]] && (>&2 echo "$message")
+}
+
+function usage(){
+  echo "${script_name}: Run lstag as a docker container"
+  echo ""
+  echo "Doc: - https://github.com/ivanilves/lstags"
+  echo ""
+  echo "Available options:"
+  echo "--shell: Runs an interactive shell into the container for debugging"
+  echo "--help: This message"
+  echo ""
+
+  exit 0
+}
+
+
+
+# == Start
+#
+# === Output management
+#
+# If DEBUG is set, display error messages in the terminal,
+# Redirect to /dev/null otherwise
+
+log "===> ${script_name}: Start"
+
+
+# === Options parsing
+#
+# Allow User to ask for debugging shell into the container
+[[ "--shell" == "$1" ]] \
+  && docker_opts="${docker_opts} --entrypoint /bin/bash" \
+  && log "---> Setting entrypoint to /bin/bash"
+
+[[ "--help" == "$1" ]] \
+  && usage
+
+[[ -z "$@" ]] \
+  && log "---> No options have been provided; continue"
+
+
+# === Actions
+#
+log "---> Docker container info"
+log "     Image: ${docker_image}"
+log "     Run options:"
+for option in ${docker_opts}; do
+  log "     ${option}"
+done
+
+log "---> Starting Atom docker container"
+docker container run ${docker_opts} ${docker_image}
