@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+docker run --rm -it \
+  --user $UID:$GID \
+  --net=host \
+  --volume=${HOME}/.kube:/home/k/.kube \
+  --volume=${HOME}/.secrets/k8s:${HOME}/.secrets/k8s \
+  --volume "${PWD}":${PWD} \
+  --workdir=${PWD} \
+  solsson/kube-shell
