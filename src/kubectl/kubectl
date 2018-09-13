@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# Kubernetes Client
+#
+# Doc:
+# - https://hub.docker.com/r/wernight/kubectl/
+#
+docker run --rm -it \
+   --user $UID:$GID \
+   --net=host \
+   --volume=${HOME}/.kube:/config/.kube \
+   --volume "$PWD":/code:ro \
+   --workdir=/code \
+   wernight/kubectl:1.6.1 "$@"
+
