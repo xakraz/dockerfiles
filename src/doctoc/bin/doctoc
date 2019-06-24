@@ -11,7 +11,11 @@ set -o nounset
 
 # == Variables
 #
-SCRIPT_NAME=$(basename $(readlink -e ${BASH_SOURCE[0]}))
+if [[ $(uname -s) == "Darwin" ]] ; then
+  SCRIPT_NAME=$(basename $(readlink ${BASH_SOURCE[0]}))
+else
+  SCRIPT_NAME=$(basename $(readlink -e ${BASH_SOURCE[0]}))
+fi
 
 DOCKER_REGISTRY=''    # Docker Hub
 DOCKER_REPOSITORY='peterdavehello'                  # Docker Library images
