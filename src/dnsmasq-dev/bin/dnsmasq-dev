@@ -20,10 +20,14 @@ set -o nounset
 # == Vars
 #
 #
-SCRIPT_NAME=$(basename $(readlink -e ${BASH_SOURCE[0]}))
+if [[ $(uname -s) == "Darwin" ]] ; then
+  SCRIPT_NAME=$(basename $(readlink ${BASH_SOURCE[0]}))
+else
+  SCRIPT_NAME=$(basename $(readlink -e ${BASH_SOURCE[0]}))
+fi
 
-DNSMASQ_CONF_FILE="${HOME}/.config/dnsmasq-dev/dnsmasq.conf"
-DNSMASQ_PORT=53
+DNSMASQ_CONF_FILE="${DNSMASQ_CONF_FILE:-${HOME}/.config/dnsmasq-dev/dnsmasq.conf}"
+DNSMASQ_PORT="${DNSMASQ_PORT:-53}"
 
 # Hub.docker.io
 DOCKER_REGISTRY=""
@@ -111,6 +115,12 @@ EOF"
 
   *)
     echo "Unknown action $1"
+    echo ""
+    echo "Available actions are:"
+    echo "* start:  Start the service"
+    echo "* stop:   Stop the service"
+    echo "* status: Status of the service"
+    echo ""
     ;;
 esac
 
